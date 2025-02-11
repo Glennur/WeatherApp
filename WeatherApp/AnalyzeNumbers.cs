@@ -15,8 +15,10 @@ namespace WeatherApp
             using (StreamReader reader = new StreamReader(path + fileName))
             {
                 string line;
-                int rowCount = 0;
-                decimal avgTemp = 0;
+                int outsideRowCount = 0;
+                int insideRowCount = 0;
+                decimal outsideAvgTemp = 0;
+                decimal insideAvgTemp = 0;
 
                 string pattern = $@"{date} (?<time>\d+:\d+:\d+),(?<place>Ute|Inne),(?<temp>\d+\.\d)";
 
@@ -33,15 +35,24 @@ namespace WeatherApp
                         string tempString = match.Groups["temp"].Value.Replace(".", ",");
                         if (decimal.TryParse(tempString, out decimal temp))
                         {
-                            avgTemp += temp;
-                            rowCount++;
+                            if (line.Contains("Ute"))
+                            {
+                                outsideAvgTemp += temp;
+                                outsideRowCount++;
+                            }
+                            else
+                            {
+                                insideAvgTemp += temp;
+                                insideRowCount++;
+                            }
                             
                         }
                     }
                 }
-                if (rowCount > 0)
+                if (outsideRowCount > 0 && insideRowCount > 0)
                 {
-                    Console.WriteLine($"{avgTemp / rowCount} grader är medeltemperatur för {date}");
+                    Console.WriteLine($"{outsideAvgTemp/outsideRowCount:F2} grader är medeltemperatur utomhus för {date}");
+                    Console.WriteLine($"{insideAvgTemp/insideRowCount:F2} grader är medeltemperatur inomhus för {date}");
                 }
                 else
                 {
