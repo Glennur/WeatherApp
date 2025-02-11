@@ -13,7 +13,7 @@ namespace WeatherApp
             bool dateOk = false;
             do
             {
-                Console.WriteLine("Ange datum: ");
+                Console.WriteLine("Ange datu m: ");
                 date = Console.ReadLine();
 
                 dateOk = RegExTester.TestDate(date);
