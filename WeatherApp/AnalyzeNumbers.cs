@@ -155,6 +155,57 @@ namespace WeatherApp
 
             Console.ReadKey(true);
     
-        }    
+        }
+        public static void DryToMoist()
+        {
+            List<Models.DailyTemp> dryest = HelpersList.WeatherList("../../../Files/tempdata.txt");
+
+
+            var sortedHumidity = dryest.GroupBy(x => new { x.Date, x.InsideOutside })
+                            .Select(g => new
+                            {
+                                groupedDate = g.Key.Date,
+                                InsideOutSide = g.Key.InsideOutside,
+                                averageHumidity = g.Average(x => x.Humidity)
+                            })
+                            .OrderBy(d => d.averageHumidity) // Sorterar i stigande ordning (torrast först)
+                            .ToList();
+
+            var driestInside = sortedHumidity.Where(k => !k.InsideOutSide).Take(10).ToList();
+            var driestOutside = sortedHumidity.Where(k => k.InsideOutSide).Take(10).ToList();
+
+            var mostHumidInside = sortedHumidity.Where(k => !k.InsideOutSide).OrderByDescending(d => d.averageHumidity).Take(10).ToList();
+            var mostHumidOutside = sortedHumidity.Where(k => k.InsideOutSide).OrderByDescending(d => d.averageHumidity).Take(10).ToList();
+
+            Console.WriteLine("Torrast Inomhus:");
+            foreach (var g in driestInside)
+            {
+                Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2} {(g.InsideOutSide)}");
+            }
+
+            Console.WriteLine("Torrast Utomhus:");
+            foreach (var g in driestOutside)
+            {
+                Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2} {(g.InsideOutSide)}");
+            }
+
+            Console.WriteLine("Fuktigast Inomhus:");
+            foreach (var g in mostHumidInside)
+            {
+                Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2} {(g.InsideOutSide)}");
+            }
+
+            Console.WriteLine("Fuktigast Utomhus:");
+            foreach (var g in mostHumidOutside)
+            {
+                Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2} {(g.InsideOutSide)}");
+            }
+
+            Console.ReadKey(true);
+
+
+            Console.ReadKey(true);
+
+        }
     }
 }

@@ -16,7 +16,8 @@ namespace WeatherApp
                 Console.WriteLine("2. Medelluftfuktighet/dag");
                 Console.WriteLine("3. Medeltemp/månad");
                 Console.WriteLine("4. Lista på alla dagar");
-                Console.WriteLine("5. Sortera varmast");
+                Console.WriteLine("5. Sortera varmast dagarna");
+                Console.WriteLine("6. Sortera torraste dagarna");
 
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true);
                 string date;
@@ -47,6 +48,9 @@ namespace WeatherApp
                         break;
                     case '5':
                         AnalyzeNumbers.WarmestToColdest();
+                        break;
+                    case '6':
+                        AnalyzeNumbers.DryToMoist();
                         break;
                 }
             }
