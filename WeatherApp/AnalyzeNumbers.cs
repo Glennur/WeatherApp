@@ -20,7 +20,7 @@ namespace WeatherApp
                 decimal outsideAvgTemp = 0;
                 decimal insideAvgTemp = 0;
 
-                string pattern = $@"{date} (?<time>\d+:\d+:\d+),(?<place>Ute|Inne),(?<temp>\d+\.\d)";
+                string pattern = $@"{date}[-]?[0-9]?[0-9]? (?<time>\d+:\d+:\d+),(?<place>Ute|Inne),(?<temp>\d+\.\d)";
 
                 Regex regex = new Regex(pattern);
 
@@ -51,7 +51,7 @@ namespace WeatherApp
                 }
                 if (outsideRowCount > 0 && insideRowCount > 0)
                 {
-                    Console.WriteLine($"{outsideAvgTemp/outsideRowCount:F2} grader är medeltemperatur utomhus för {date}");
+                    Console.WriteLine($"{outsideAvgTemp / outsideRowCount:F2} grader är medeltemperatur utomhus för {date}");
                     Console.WriteLine($"{insideAvgTemp/insideRowCount:F2} grader är medeltemperatur inomhus för {date}");
                 }
                 else
@@ -61,6 +61,60 @@ namespace WeatherApp
                 
             }
         
+        }
+
+
+        public static void AverageHumidity(string date, string fileName)
+        {
+            using (StreamReader reader = new StreamReader(path + fileName))
+            {
+                string line;
+                int outsideRowCount = 0;
+                int insideRowCount = 0;
+                decimal outsideAvgHumidity = 0;
+                decimal insideAvgHumidity = 0;
+
+                string pattern = $@"{date}[-]?[0-9]?[0-9]? (?<time>\d+:\d+:\d+),(?<place>Ute|Inne),(?<temp>\d+\.\d),(?<humidity>\d+)";
+
+                Regex regex = new Regex(pattern);
+
+
+                while ((line = reader.ReadLine()) != null)
+
+                {
+                    Match match = regex.Match(line);
+                    if (match.Success)
+                    {
+                        //Console.WriteLine(line);
+                        string tempString = match.Groups["humidity"].Value.Replace(".", ",");
+                        if (decimal.TryParse(tempString, out decimal humidity))
+                        {
+                            if (line.Contains("Ute"))
+                            {
+                                outsideAvgHumidity += humidity;
+                                outsideRowCount++;
+                            }
+                            else
+                            {
+                                insideAvgHumidity += humidity;
+                                insideRowCount++;
+                            }
+
+                        }
+                    }
+                }
+                if (outsideRowCount > 0 && insideRowCount > 0)
+                {
+                    Console.WriteLine($"Luftfuktigheten är {outsideAvgHumidity / outsideRowCount:F2} utomhus för {date}");
+                    Console.WriteLine($"Luftfuktigheten är {insideAvgHumidity / insideRowCount:F2} inomhus för {date}");
+                }
+                else
+                {
+                    Console.WriteLine("Inga mätningar hittades för valt datum");
+                }
+
+            }
+
         }
     }
 }

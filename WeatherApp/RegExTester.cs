@@ -25,5 +25,21 @@ namespace WeatherApp
                 return false;
             }
         }
+        public static bool TestMonth(string date)
+        {
+            string testDate = @"^2016-(?<month>0[1-9]|1[0-2])";
+
+            Regex regex = new Regex(testDate);
+            Match match = regex.Match(date);
+
+            if (match.Success)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
