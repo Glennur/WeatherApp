@@ -6,8 +6,10 @@
         {
             while (true)
             {
+                
                 Console.Clear();
                 string fileName = "tempdata.txt";
+                AnalyzeNumbers.WarmestToColdest(fileName);
                 Console.WriteLine("1. Medeltemp/dag");
                 Console.WriteLine("2. Medelluftfuktighet/dag");
                 Console.WriteLine("3. Medeltemp/månad");
