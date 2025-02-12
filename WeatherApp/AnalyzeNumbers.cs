@@ -10,11 +10,10 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace WeatherApp
 {
     internal class AnalyzeNumbers
-    {
-        public static string path = "../../../Files/";
+    {      
         public static void AverageTemp(string date, string fileName)
         {
-            using (StreamReader reader = new StreamReader(path + fileName))
+            using (StreamReader reader = new StreamReader(fileName))
             {
                 string line;
                 int outsideRowCount = 0;
@@ -65,10 +64,9 @@ namespace WeatherApp
         
         }
 
-
         public static void AverageHumidity(string date, string fileName)
         {
-            using (StreamReader reader = new StreamReader(path + fileName))
+            using (StreamReader reader = new StreamReader(fileName))
             {
                 string line;
                 int outsideRowCount = 0;
@@ -118,49 +116,13 @@ namespace WeatherApp
             }
 
         }
-        
-        public static void WarmestToColdest(string fileName)
+
+        public static void WarmestToColdest()
         {
-            List<Models.DailyTemp> weatherDatas = new List<Models.DailyTemp>();
-            //string pattern = $@"(?<date>2016-(?<month>0[1-9]|1[0-2])-(?<day>0[1-9]|[12]\d|3[01]))\s(?<time>\d+:\d+:\d+),(?<place>Ute|Inne),(?<temp>\d+\.\d),(?<humidity>\d+)";
-            string pattern = @"(?<date>\d{4}-\d{2}-\d{2}) (?<time>\d{2}:\d{2}:\d{2}),(?<place>Ute|Inne),(?<temp>\d+\.\d+),(?<humidity>\d+)";
-            Regex regex = new Regex(pattern);
-            using (StreamReader reader = new StreamReader(path + fileName))
-            {
-                string data;
-                while ((data = reader.ReadLine()) != null)
-                {
-                    Match match = regex.Match(data);
-                    if (match.Success)
-                    {
-                        Models.DailyTemp dailyTemp = new Models.DailyTemp
-                        {
-                            Date = match.Groups["date"].Value,
-                            Time = match.Groups["time"].Value,
-                            InsideOutside = match.Groups["place"].Value.Equals("Ute", StringComparison.OrdinalIgnoreCase),
-
-                            Humidity = int.Parse(match.Groups["humidity"].Value)
-                            
-                        };
-                        string tempTemp = match.Groups["temp"].Value.Replace(".", ",");
-                        if (decimal.TryParse(tempTemp, out decimal temp))
-                        {
-                            dailyTemp.Temp = temp;
-                        }
-                        weatherDatas.Add(dailyTemp);
-
-                        
-
-                    }
-
-                }
-                foreach (var item in weatherDatas)
-                {
-                    Console.WriteLine(item.Date + "\t" + item.Time + "\t" + item.Temp + "\t" + item.Humidity);
-                }
-
-            }
-
+            
+            //var sortedWarmest = ???.OrderByDescending(d => d.AvgTemp).ToList();
         }
+        
+        
     }
 }
