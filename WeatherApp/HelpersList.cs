@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace WeatherApp
 {
-    public class List
+    public class HelpersList
     {
-        public List<Models.DailyTemp> weatherDatas = new List<Models.DailyTemp>();
-        public static void WeatherList(string fileName)
+        
+        public static List<Models.DailyTemp> WeatherList(string fileName)
         {
-            //List<Models.DailyTemp> weatherDatas = new List<Models.DailyTemp>();
+            List<Models.DailyTemp> weatherDatas = new List<Models.DailyTemp>();
             string pattern = @"(?<date>\d{4}-\d{2}-\d{2}) (?<time>\d{2}:\d{2}:\d{2}),(?<place>Ute|Inne),(?<temp>\d+\.\d+),(?<humidity>\d+)";
             Regex regex = new Regex(pattern);
             using (StreamReader reader = new StreamReader(fileName))
@@ -40,18 +40,12 @@ namespace WeatherApp
                         }
                         weatherDatas.Add(dailyTemp);
 
-
-
                     }
 
                 }
-                foreach (var item in weatherDatas)
-                {
-                    Console.WriteLine(item.Date + "\t" + item.Time + "\t" + item.Temp + "\t" + item.Humidity);
-                }
-
+               
             }
-
+            return weatherDatas;
         }
     }
 }

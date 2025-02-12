@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WeatherApp.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WeatherApp
@@ -119,10 +122,39 @@ namespace WeatherApp
 
         public static void WarmestToColdest()
         {
-            
-            //var sortedWarmest = ???.OrderByDescending(d => d.AvgTemp).ToList();
-        }
-        
-        
+            List<Models.DailyTemp> warmest = HelpersList.WeatherList("../../../Files/tempdata.txt");
+
+
+            var sortedWarmest = warmest.GroupBy(x => new { x.Date, x.InsideOutside })
+
+                                       .Select(g => new { groupedDate = g.Key.Date, InsideOutSide = g.Key.InsideOutside, avarageTemp = g.Average(x => x.Temp) })
+                                       .OrderByDescending(d => d.avarageTemp).ToList();
+
+            var warmestInside = sortedWarmest
+                                .Where(k => !k.InsideOutSide).ToList();
+
+            var warmestOutside = sortedWarmest
+                                 .Where(k => k.InsideOutSide).ToList();
+                        
+                                
+
+            for (int i = 0; i < 10; i++)
+            {
+                var g = warmestInside[i];
+
+                Console.WriteLine($"{g.groupedDate} {g.avarageTemp:F2} {(g.InsideOutSide)}");
+
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                var g = warmestOutside[i];
+
+                Console.WriteLine($"{g.groupedDate} {g.avarageTemp:F2} {(g.InsideOutSide)}");
+
+            }
+
+            Console.ReadKey(true);
+    
+        }    
     }
 }

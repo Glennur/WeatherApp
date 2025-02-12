@@ -1,4 +1,6 @@
-﻿namespace WeatherApp
+﻿using WeatherApp.Models;
+
+namespace WeatherApp
 {
     internal class Program
     {
@@ -9,11 +11,12 @@
                 
                 Console.Clear();
                 string fileName = "../../../Files/tempdata.txt";
-                //List.WeatherList(fileName);
+                //HelpersList.WeatherList(fileName);
                 Console.WriteLine("1. Medeltemp/dag");
                 Console.WriteLine("2. Medelluftfuktighet/dag");
                 Console.WriteLine("3. Medeltemp/månad");
                 Console.WriteLine("4. Lista på alla dagar");
+                Console.WriteLine("5. Sortera varmast");
 
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true);
                 string date;
@@ -40,7 +43,10 @@
                         Console.ReadKey();
                         break;
                     case '4':
-                        List.WeatherList(fileName);
+                        HelpersList.WeatherList(fileName);
+                        break;
+                    case '5':
+                        AnalyzeNumbers.WarmestToColdest();
                         break;
                 }
             }
