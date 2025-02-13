@@ -12,12 +12,15 @@ namespace WeatherApp
                 Console.Clear();
                 string fileName = "../../../Files/tempdata.txt";
                 //HelpersList.WeatherList(fileName);
-                Console.WriteLine("1. Medeltemp/dag");
-                Console.WriteLine("2. Medelluftfuktighet/dag");
-                Console.WriteLine("3. Medeltemp/månad");
-                Console.WriteLine("4. Lista på alla dagar");
-                Console.WriteLine("5. Sortera varmast dagarna");
-                Console.WriteLine("6. Sortera torraste dagarna");
+                List<string> list = new List<string>() { "Medeltemp/dag", "Medelluftfuktighet/dag", 
+                    "Medeltemp/månad", "Lista på alla dagar", "Sortera varmast dagarna", "Sortera torraste dagarna" };   //En lista med strängar. Bygg en extensions
+                list.NumberedList();
+                //Console.WriteLine("1. Medeltemp/dag");
+                //Console.WriteLine("2. Medelluftfuktighet/dag");
+                //Console.WriteLine("3. Medeltemp/månad");
+                //Console.WriteLine("4. Lista på alla dagar");
+                //Console.WriteLine("5. Sortera varmast dagarna");
+                //Console.WriteLine("6. Sortera torraste dagarna");
 
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true);
                 string date;

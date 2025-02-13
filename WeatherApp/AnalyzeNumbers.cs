@@ -23,8 +23,24 @@ namespace WeatherApp
                 int insideRowCount = 0;
                 decimal outsideAvgTemp = 0;
                 decimal insideAvgTemp = 0;
+               
 
                 string pattern = $@"{date}[-]?[0-9]?[0-9]? (?<time>\d+:\d+:\d+),(?<place>Ute|Inne),(?<temp>\d+\.\d)";
+
+                
+                string monthCheck = @"\d{4}[-](?<month>0[1-9]|1[0-2])?[0-9]?[0-9]?";
+                Regex regex1 = new Regex(monthCheck);
+                Match matchMonth = regex1.Match(date);
+                if (matchMonth.Success)
+                {
+                    string testmonth = matchMonth.Groups["month"].Value;
+                    if (int.TryParse(testmonth, out int month))
+                    {
+                        Console.WriteLine(month);
+                    }
+                }
+                
+                
 
                 Regex regex = new Regex(pattern);
 
