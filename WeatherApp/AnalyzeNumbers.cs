@@ -199,25 +199,25 @@ namespace WeatherApp
             Console.WriteLine("Torrast Inomhus:");
             foreach (var g in driestInside)
             {
-                Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2} {(g.InsideOutSide)}");
+                Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2}");
             }
 
             Console.WriteLine("Torrast Utomhus:");
             foreach (var g in driestOutside)
             {
-                Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2} {(g.InsideOutSide)}");
+                Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2}");
             }
 
             Console.WriteLine("Fuktigast Inomhus:");
             foreach (var g in mostHumidInside)
             {
-                Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2} {(g.InsideOutSide)}");
+                Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2}");
             }
 
             Console.WriteLine("Fuktigast Utomhus:");
             foreach (var g in mostHumidOutside)
             {
-                Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2} {(g.InsideOutSide)}");
+                Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2}");
             }
 
             Console.ReadKey(true);
@@ -227,48 +227,51 @@ namespace WeatherApp
         {
             List<Models.DailyTemp> moldRisk = HelpersList.WeatherList("../../../Files/tempdata.txt");
 
-            var sortedMoldRisk = moldRisk.GroupBy(x => new { x.Date, x.InsideOutside })
-                                .Select(g => new
-                                {
-                                    groupedDate = g.Key.Date,
-                                    InsideOutSide = g.Key.InsideOutside,
-                                    moldRisk = //g.Average(x => ((x.Humidity - 78) * (x.Temp / 15)) / 0.22)
+            
+                var sortedMoldRisk = moldRisk.Where(x => DateTime.TryParse(x.Date, out _)).
+                                    GroupBy(x => new { year = DateTime.Parse(x.Date).Year, month = DateTime.Parse(x.Date).Month, x.InsideOutside })
+                                    .Select(g => new
+                                    {
+                                        groupedDate = g.Key.month,
+                                        groupedYear = g.Key.year,
+                                        InsideOutSide = g.Key.InsideOutside,
+                                        moldRisk = g.Average(x => ((x.Humidity - 78) * (x.Temp / 15m)) / 0.22m)   //Luftfuktigheten minskar med 78. Temperaturen delas med 15. 0.22 förstorar temperaturen 4 ggr.
+                                    })
 
-                                    ((g.Average(x => (decimal)x.Humidity) - 78m) *  //Luftfuktigheten minskar med 78. Temperaturen delas med 15. 0.22 förstorar temperaturen 4 ggr.
-                                          (g.Average(x => x.Temp) / 15m)) / 0.22m
-                                })
-                            .OrderBy(d => d.moldRisk)
-                            .ToList();
+                                .OrderBy(d => d.moldRisk)
+                                .Where(m => m.moldRisk > 0)
+                                .ToList();
 
-            var lowestMoldRiskInside = sortedMoldRisk.Where(k => !k.InsideOutSide).Take(3).ToList();
-            var lowestMoldRiskOutside = sortedMoldRisk.Where(k => k.InsideOutSide).Take(3).ToList();
+                var lowestMoldRiskInside = sortedMoldRisk.Where(k => !k.InsideOutSide).Take(3).ToList();
+                var lowestMoldRiskOutside = sortedMoldRisk.Where(k => k.InsideOutSide).Take(3).ToList();
 
-            var mostMoldRiskInside = sortedMoldRisk.Where(k => !k.InsideOutSide).OrderByDescending(d => d.moldRisk).Take(3).ToList();
-            var mostMoldRiskOutside = sortedMoldRisk.Where(k => k.InsideOutSide).OrderByDescending(d => d.moldRisk).Take(3).ToList();
+                var highestMoldRiskInside = sortedMoldRisk.Where(k => !k.InsideOutSide).OrderByDescending(d => d.moldRisk).Take(3).ToList();
+                var highestMoldRiskOutside = sortedMoldRisk.Where(k => k.InsideOutSide).OrderByDescending(d => d.moldRisk).Take(3).ToList();
 
-            Console.WriteLine("Minst risk för mogel inomhus:");
-            foreach (var g in lowestMoldRiskInside)
-            {
-                Console.WriteLine($"{g.groupedDate} {g.moldRisk:F2}");
-            }
+                Console.WriteLine("Minst risk för mogel inomhus:");
+                foreach (var g in lowestMoldRiskInside)
+                {
+                    Console.WriteLine($"{g.groupedYear} {g.groupedDate} {g.moldRisk:F2}");
+                }
 
-            Console.WriteLine("Minst risk för mögel utomhus:");
-            foreach (var g in lowestMoldRiskOutside)
-            {
-                Console.WriteLine($"{g.groupedDate} {g.moldRisk:F2}");
-            }
+                Console.WriteLine("Minst risk för mögel utomhus:");
+                foreach (var g in lowestMoldRiskOutside)
+                {
+                    Console.WriteLine($"{g.groupedYear} {g.groupedDate} {g.moldRisk:F2}");
+                }
 
-            Console.WriteLine("Mest risk för mögel inomhus:");
-            foreach (var g in mostMoldRiskInside)
-            {
-                Console.WriteLine($"{g.groupedDate} {g.moldRisk:F2}");
-            }
+                Console.WriteLine("Mest risk för mögel inomhus:");
+                foreach (var g in highestMoldRiskInside)
+                {
+                    Console.WriteLine($"{g.groupedYear} {g.groupedDate} {g.moldRisk:F2}");
+                }
 
-            Console.WriteLine("Minst risk för mogel Utomhus:");
-            foreach (var g in mostMoldRiskOutside)
-            {
-                Console.WriteLine($"{g.groupedDate} {g.moldRisk:F2}");
-            }
+                Console.WriteLine("Mest risk för mogel Utomhus:");
+                foreach (var g in highestMoldRiskOutside)
+                {
+                    Console.WriteLine($"{g.groupedYear} {g.groupedDate} {g.moldRisk:F2}");
+                }
+            
             Console.ReadKey();
         }
     }
