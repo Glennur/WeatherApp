@@ -13,7 +13,7 @@ namespace WeatherApp
                 string fileName = "../../../Files/tempdata.txt";
                 //HelpersList.WeatherList(fileName);
                 List<string> list = new List<string>() { "Medeltemp/dag", "Medelluftfuktighet/dag", 
-                    "Medeltemp/månad", "Lista på alla dagar", "Sortera varmast dagarna", "Sortera torraste dagarna" };   //En lista med strängar. Bygg en extensions
+                    "Medeltemp/månad", "Lista på alla dagar", "Sortera varmast dagarna", "Sortera torraste dagarna", "Mögelrisk" };   //En lista med strängar. Bygg en extensions
                 list.NumberedList();
                 //Console.WriteLine("1. Medeltemp/dag");
                 //Console.WriteLine("2. Medelluftfuktighet/dag");
@@ -54,6 +54,9 @@ namespace WeatherApp
                         break;
                     case '6':
                         AnalyzeNumbers.DryToMoist();
+                        break;
+                    case '7':
+                        AnalyzeNumbers.sortedMoldRisk();
                         break;
                 }
             }
