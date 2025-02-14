@@ -227,52 +227,107 @@ namespace WeatherApp
         {
             List<Models.DailyTemp> moldRisk = HelpersList.WeatherList("../../../Files/tempdata.txt");
 
-            
-                var sortedMoldRisk = moldRisk.Where(x => DateTime.TryParse(x.Date, out _)).
-                                    GroupBy(x => new { year = DateTime.Parse(x.Date).Year, month = DateTime.Parse(x.Date).Month, x.InsideOutside })
-                                    .Select(g => new
-                                    {
-                                        groupedDate = g.Key.month,
-                                        groupedYear = g.Key.year,
-                                        InsideOutSide = g.Key.InsideOutside,
-                                        moldRisk = g.Average(x => ((x.Humidity - 78) * (x.Temp / 15m)) / 0.22m)   //Luftfuktigheten minskar med 78. Temperaturen delas med 15. 0.22 förstorar temperaturen 4 ggr.
-                                    })
 
-                                .OrderBy(d => d.moldRisk)
-                                .Where(m => m.moldRisk > 0)
-                                .ToList();
+            var sortedMoldRisk = moldRisk.Where(x => DateTime.TryParse(x.Date, out _)).
+                                GroupBy(x => new { year = DateTime.Parse(x.Date).Year, month = DateTime.Parse(x.Date).Month, x.InsideOutside })
+                                .Select(g => new
+                                {
+                                    groupedDate = g.Key.month,
+                                    groupedYear = g.Key.year,
+                                    InsideOutSide = g.Key.InsideOutside,
+                                    moldRisk = g.Average(x => ((x.Humidity - 78) * (x.Temp / 15m)) / 0.22m)   //Luftfuktigheten minskar med 78. Temperaturen delas med 15. 0.22 förstorar temperaturen 4 ggr.
+                                })
 
-                var lowestMoldRiskInside = sortedMoldRisk.Where(k => !k.InsideOutSide).Take(3).ToList();
-                var lowestMoldRiskOutside = sortedMoldRisk.Where(k => k.InsideOutSide).Take(3).ToList();
+                            .OrderBy(d => d.moldRisk)
+                            .Where(m => m.moldRisk > 0)
+                            .ToList();
 
-                var highestMoldRiskInside = sortedMoldRisk.Where(k => !k.InsideOutSide).OrderByDescending(d => d.moldRisk).Take(3).ToList();
-                var highestMoldRiskOutside = sortedMoldRisk.Where(k => k.InsideOutSide).OrderByDescending(d => d.moldRisk).Take(3).ToList();
+            var lowestMoldRiskInside = sortedMoldRisk.Where(k => !k.InsideOutSide).Take(3).ToList();
+            var lowestMoldRiskOutside = sortedMoldRisk.Where(k => k.InsideOutSide).Take(3).ToList();
 
-                Console.WriteLine("Minst risk för mogel inomhus:");
-                foreach (var g in lowestMoldRiskInside)
-                {
-                    Console.WriteLine($"{g.groupedYear} {g.groupedDate} {g.moldRisk:F2}");
-                }
+            var highestMoldRiskInside = sortedMoldRisk.Where(k => !k.InsideOutSide).OrderByDescending(d => d.moldRisk).Take(3).ToList();
+            var highestMoldRiskOutside = sortedMoldRisk.Where(k => k.InsideOutSide).OrderByDescending(d => d.moldRisk).Take(3).ToList();
 
-                Console.WriteLine("Minst risk för mögel utomhus:");
-                foreach (var g in lowestMoldRiskOutside)
-                {
-                    Console.WriteLine($"{g.groupedYear} {g.groupedDate} {g.moldRisk:F2}");
-                }
+            Console.WriteLine("Minst risk för mögel inomhus:");
+            foreach (var g in lowestMoldRiskInside)
+            {
+                Console.WriteLine($"{g.groupedYear} {typeof(Models.Enums.Months).GetEnumName(g.groupedDate).PadRight(10)} {g.moldRisk:F2}");
+            }
 
-                Console.WriteLine("Mest risk för mögel inomhus:");
-                foreach (var g in highestMoldRiskInside)
-                {
-                    Console.WriteLine($"{g.groupedYear} {g.groupedDate} {g.moldRisk:F2}");
-                }
+            Console.WriteLine("Minst risk för mögel utomhus:");
+            foreach (var g in lowestMoldRiskOutside)
+            {
+                Console.WriteLine($"{g.groupedYear} {typeof(Models.Enums.Months).GetEnumName(g.groupedDate).PadRight(10)} {g.moldRisk:F2}");
+            }
 
-                Console.WriteLine("Mest risk för mogel Utomhus:");
-                foreach (var g in highestMoldRiskOutside)
-                {
-                    Console.WriteLine($"{g.groupedYear} {g.groupedDate} {g.moldRisk:F2}");
-                }
-            
+            Console.WriteLine("Mest risk för mögel inomhus:");
+            foreach (var g in highestMoldRiskInside)
+            {
+                Console.WriteLine($"{g.groupedYear} {typeof(Models.Enums.Months).GetEnumName(g.groupedDate).PadRight(10)} {g.moldRisk:F2}");
+            }
+
+            Console.WriteLine("Mest risk för mögel Utomhus:");
+            foreach (var g in highestMoldRiskOutside)
+            {
+                Console.WriteLine($"{g.groupedYear} {typeof(Models.Enums.Months).GetEnumName(g.groupedDate).PadRight(10)} {g.moldRisk:F2}");
+            }
+
             Console.ReadKey();
         }
+        public static void MeteorologicalAutumn()
+        {
+            List<Models.DailyTemp> seasonData = HelpersList.WeatherList("../../../Files/tempdata.txt");
+
+            var tempData = seasonData.Where(k => k.InsideOutside)
+                                     .GroupBy(x => new { x.Date })
+                                     .Select(g => new { groupedDate = g.Key.Date, avarageTemp = g.Average(x => x.Temp) })
+                                     .ToList();
+
+
+            for (int i = 0; i <= tempData.Count - 5; i++)
+            {
+                if (tempData.Skip(i).Take(5).All(d => d.avarageTemp < 10))
+                {
+                    Console.WriteLine($"Meteorologisk höst startar den {tempData[i].groupedDate}");
+                    Console.ReadKey();
+                    return;
+                }
+            }
+
+            Console.ReadKey();
+
+        }
+
+        public static void MeterorologicalWinter()
+        {
+            List<Models.DailyTemp> seasonData = HelpersList.WeatherList("../../../Files/tempdata.txt");
+
+            var tempData = seasonData.Where(k => k.InsideOutside)
+                                     .GroupBy(x => new { x.Date })
+                                     .Select(g => new { groupedDate = g.Key.Date, avarageTemp = g.Average(x => x.Temp) })
+                                     .ToList();
+
+
+            for (int i = 0; i <= tempData.Count - 5; i++)
+            {
+                if (tempData.Skip(i).Take(5).All(d => d.avarageTemp < 0))
+                {
+                    Console.WriteLine($"Meteorologisk vinter startar den {tempData[i].groupedDate}");
+                    Console.ReadKey();
+                    return;
+                }
+                else if (tempData.Skip(i).Take(5).All(d => d.avarageTemp < 2))
+                {
+                    
+                        Console.WriteLine($"Närmst meteorologisk vinter startar den {tempData[i].groupedDate}");
+                        Console.ReadKey();
+                        return;
+                    
+                }
+            }
+        }
+
     }
 }
+    
+
