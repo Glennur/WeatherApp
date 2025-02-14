@@ -16,6 +16,7 @@ namespace WeatherApp
     {      
         public static void AverageTemp(string date, string fileName)
         {
+            
             using (StreamReader reader = new StreamReader(fileName))
             {
                 string line;
@@ -31,12 +32,14 @@ namespace WeatherApp
                 string monthCheck = @"\d{4}[-](?<month>0[1-9]|1[0-2])?[0-9]?[0-9]?";
                 Regex regex1 = new Regex(monthCheck);
                 Match matchMonth = regex1.Match(date);
+                string monthName;
+                
                 if (matchMonth.Success)
                 {
                     string testmonth = matchMonth.Groups["month"].Value;
                     if (int.TryParse(testmonth, out int month))
                     {
-                        Console.WriteLine(month);
+                        Console.WriteLine(typeof(Models.Enums.Months).GetEnumName(month));     
                     }
                 }
                 
@@ -71,7 +74,7 @@ namespace WeatherApp
                 }
                 if (outsideRowCount > 0 && insideRowCount > 0)
                 {
-                    Console.WriteLine($"{outsideAvgTemp / outsideRowCount:F2} grader är medeltemperatur utomhus för {date}");
+                    Console.WriteLine($"{outsideAvgTemp / outsideRowCount:F2} grader är medeltemperatur utomhus för {date} ");
                     Console.WriteLine($"{insideAvgTemp/insideRowCount:F2} grader är medeltemperatur inomhus för {date}");
                 }
                 else
