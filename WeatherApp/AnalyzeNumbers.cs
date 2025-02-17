@@ -14,6 +14,15 @@ namespace WeatherApp
 {
     internal class AnalyzeNumbers
     {
+        public static void SaveToLog(string text)
+        {
+            string logFilePath = "../../../Files/log.txt"; // Filen sparas i programmets mapp
+
+            using (StreamWriter writer = new StreamWriter(logFilePath, true)) // 'true' lägger till text utan att radera tidigare innehåll
+            {
+                writer.WriteLine(text);
+            }
+        }
         public static void AverageTemp(string date, string fileName)
         {
 
@@ -40,6 +49,7 @@ namespace WeatherApp
                     if (int.TryParse(testmonth, out int month))
                     {
                         Console.WriteLine(typeof(Models.Enums.Months).GetEnumName(month));
+                        SaveToLog(typeof(Models.Enums.Months).GetEnumName(month));
                     }
                 }
 
@@ -75,11 +85,14 @@ namespace WeatherApp
                 if (outsideRowCount > 0 && insideRowCount > 0)
                 {
                     Console.WriteLine($"{outsideAvgTemp / outsideRowCount:F2} grader är medeltemperatur utomhus för {date} ");
+                    SaveToLog($"{outsideAvgTemp / outsideRowCount:F2} grader är medeltemperatur utomhus för {date} ");
                     Console.WriteLine($"{insideAvgTemp / insideRowCount:F2} grader är medeltemperatur inomhus för {date}");
+                    SaveToLog($"{insideAvgTemp / insideRowCount:F2} grader är medeltemperatur inomhus för {date}");
                 }
                 else
                 {
                     Console.WriteLine("Inga mätningar hittades för valt datum");
+                    SaveToLog("Inga mätningar hittades för valt datum " + date);
                 }
 
             }
@@ -128,11 +141,14 @@ namespace WeatherApp
                 if (outsideRowCount > 0 && insideRowCount > 0)
                 {
                     Console.WriteLine($"Luftfuktigheten är {outsideHumidity / outsideRowCount:F2} utomhus för {date}");
+                    SaveToLog($"Luftfuktigheten är {outsideHumidity / outsideRowCount:F2} utomhus för {date}");
                     Console.WriteLine($"Luftfuktigheten är {insideHumidity / insideRowCount:F2} inomhus för {date}");
+                    SaveToLog($"Luftfuktigheten är {insideHumidity / insideRowCount:F2} inomhus för {date}");
                 }
                 else
                 {
                     Console.WriteLine("Inga mätningar hittades för valt datum");
+                    SaveToLog("Inga mätningar hittades för valt datum " + date);
                 }
 
             }
@@ -162,6 +178,7 @@ namespace WeatherApp
                 var g = warmestInside[i];
 
                 Console.WriteLine($"{g.groupedDate} {g.avarageTemp:F2} {(g.InsideOutSide)}");
+                SaveToLog($"{g.groupedDate} {g.avarageTemp:F2} {(g.InsideOutSide)}");
 
             }
             for (int i = 0; i < 10; i++)
@@ -169,6 +186,7 @@ namespace WeatherApp
                 var g = warmestOutside[i];
 
                 Console.WriteLine($"{g.groupedDate} {g.avarageTemp:F2} {(g.InsideOutSide)}");
+                SaveToLog($"{g.groupedDate} {g.avarageTemp:F2} {(g.InsideOutSide)}");
 
             }
 
@@ -196,29 +214,35 @@ namespace WeatherApp
             var mostHumidInside = sortedHumidity.Where(k => !k.InsideOutSide).OrderByDescending(d => d.averageHumidity).Take(10).ToList();
             var mostHumidOutside = sortedHumidity.Where(k => k.InsideOutSide).OrderByDescending(d => d.averageHumidity).Take(10).ToList();
 
+            
             Console.WriteLine("Torrast Inomhus:");
             foreach (var g in driestInside)
             {
                 Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2}");
+                SaveToLog($"{g.groupedDate} {g.averageHumidity:F2}");
             }
 
             Console.WriteLine("Torrast Utomhus:");
             foreach (var g in driestOutside)
             {
                 Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2}");
+                SaveToLog($"{g.groupedDate} {g.averageHumidity:F2}");
             }
 
             Console.WriteLine("Fuktigast Inomhus:");
             foreach (var g in mostHumidInside)
             {
                 Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2}");
+                SaveToLog($"{g.groupedDate} {g.averageHumidity:F2}");
             }
 
             Console.WriteLine("Fuktigast Utomhus:");
             foreach (var g in mostHumidOutside)
             {
                 Console.WriteLine($"{g.groupedDate} {g.averageHumidity:F2}");
+                SaveToLog($"{g.groupedDate} {g.averageHumidity:F2}");
             }
+
 
             Console.ReadKey(true);
 
@@ -252,24 +276,28 @@ namespace WeatherApp
             foreach (var g in lowestMoldRiskInside)
             {
                 Console.WriteLine($"{g.groupedYear} {typeof(Models.Enums.Months).GetEnumName(g.groupedDate).PadRight(10)} {g.moldRisk:F2}");
+                SaveToLog($"{g.groupedYear} {typeof(Models.Enums.Months).GetEnumName(g.groupedDate).PadRight(10)} {g.moldRisk:F2}");
             }
 
             Console.WriteLine("Minst risk för mögel utomhus:");
             foreach (var g in lowestMoldRiskOutside)
             {
                 Console.WriteLine($"{g.groupedYear} {typeof(Models.Enums.Months).GetEnumName(g.groupedDate).PadRight(10)} {g.moldRisk:F2}");
+                SaveToLog($"{g.groupedYear} {typeof(Models.Enums.Months).GetEnumName(g.groupedDate).PadRight(10)} {g.moldRisk:F2}");
             }
 
             Console.WriteLine("Mest risk för mögel inomhus:");
             foreach (var g in highestMoldRiskInside)
             {
                 Console.WriteLine($"{g.groupedYear} {typeof(Models.Enums.Months).GetEnumName(g.groupedDate).PadRight(10)} {g.moldRisk:F2}");
+                SaveToLog($"{g.groupedYear} {typeof(Models.Enums.Months).GetEnumName(g.groupedDate).PadRight(10)} {g.moldRisk:F2}");
             }
 
             Console.WriteLine("Mest risk för mögel Utomhus:");
             foreach (var g in highestMoldRiskOutside)
             {
                 Console.WriteLine($"{g.groupedYear} {typeof(Models.Enums.Months).GetEnumName(g.groupedDate).PadRight(10)} {g.moldRisk:F2}");
+                SaveToLog($"{g.groupedYear} {typeof(Models.Enums.Months).GetEnumName(g.groupedDate).PadRight(10)} {g.moldRisk:F2}");
             }
 
             Console.ReadKey();
@@ -290,6 +318,7 @@ namespace WeatherApp
                 {
                     Console.WriteLine($"Meteorologisk höst startar den {tempData[i].groupedDate}");
                     Console.ReadKey();
+                    SaveToLog($"Meteorologisk höst startar den {tempData[i].groupedDate}");
                     return;
                 }
             }
@@ -314,6 +343,7 @@ namespace WeatherApp
                 {
                     Console.WriteLine($"Meteorologisk vinter startar den {tempData[i].groupedDate}");
                     Console.ReadKey();
+                    SaveToLog($"Meteorologisk vinter startar den {tempData[i].groupedDate}");
                     return;
                 }
                 else if (tempData.Skip(i).Take(5).All(d => d.avarageTemp < 2))
@@ -321,7 +351,8 @@ namespace WeatherApp
                     
                         Console.WriteLine($"Närmst meteorologisk vinter startar den {tempData[i].groupedDate}");
                         Console.ReadKey();
-                        return;
+                        SaveToLog($"Närmst meteorologisk vinter startar den {tempData[i].groupedDate}");
+                    return;
                     
                 }
             }
