@@ -14,6 +14,8 @@ namespace WeatherApp
 {
     internal class AnalyzeNumbers
     {
+        public delegate void LogDelegate(string message);
+
         public static void SaveToLog(string text)
         {
             string logFilePath = "../../../Files/log.txt"; // Filen sparas i programmets mapp
@@ -25,79 +27,99 @@ namespace WeatherApp
         }
         public static void AverageTemp(string date, string fileName)
         {
-
-            using (StreamReader reader = new StreamReader(fileName))
+            try
             {
-                string line;
-                int outsideRowCount = 0;
-                int insideRowCount = 0;
-                decimal outsideAvgTemp = 0;
-                decimal insideAvgTemp = 0;
+                LogDelegate logger = SaveToLog;
 
-
-                string pattern = $@"{date}[-]?[0-9]?[0-9]? (?<time>\d+:\d+:\d+),(?<place>Ute|Inne),(?<temp>\d+\.\d)";
-
-
-                string monthCheck = @"\d{4}[-](?<month>0[1-9]|1[0-2])?[0-9]?[0-9]?";
-                Regex regex1 = new Regex(monthCheck);
-                Match matchMonth = regex1.Match(date);
-                string monthName;
-
-                if (matchMonth.Success)
+                using (StreamReader reader = new StreamReader(fileName))
                 {
-                    string testmonth = matchMonth.Groups["month"].Value;
-                    if (int.TryParse(testmonth, out int month))
+                    string line;
+                    int outsideRowCount = 0;
+                    int insideRowCount = 0;
+                    decimal outsideAvgTemp = 0;
+                    decimal insideAvgTemp = 0;
+
+
+                    string pattern = $@"{date}[-]?[0-9]?[0-9]? (?<time>\d+:\d+:\d+),(?<place>Ute|Inne),(?<temp>\d+\.\d)";
+
+
+                    string monthCheck = @"\d{4}[-](?<month>0[1-9]|1[0-2])?[0-9]?[0-9]?";
+                    Regex regex1 = new Regex(monthCheck);
+                    Match matchMonth = regex1.Match(date);
+                    string monthName;
+
+                    if (matchMonth.Success)
                     {
-                        Console.WriteLine(typeof(Models.Enums.Months).GetEnumName(month));
-                        SaveToLog(typeof(Models.Enums.Months).GetEnumName(month));
-                    }
-                }
-
-
-
-                Regex regex = new Regex(pattern);
-
-
-                while ((line = reader.ReadLine()) != null)
-
-                {
-                    Match match = regex.Match(line);
-                    if (match.Success)
-                    {
-                        //Console.WriteLine(line);
-                        string tempString = match.Groups["temp"].Value.Replace(".", ",");
-                        if (decimal.TryParse(tempString, out decimal temp))
+                        string testmonth = matchMonth.Groups["month"].Value;
+                        if (int.TryParse(testmonth, out int month))
                         {
-                            if (line.Contains("Ute"))
-                            {
-                                outsideAvgTemp += temp;
-                                outsideRowCount++;
-                            }
-                            else
-                            {
-                                insideAvgTemp += temp;
-                                insideRowCount++;
-                            }
-
+                            Console.WriteLine(typeof(Models.Enums.Months).GetEnumName(month));
+                            SaveToLog(typeof(Models.Enums.Months).GetEnumName(month));
                         }
                     }
-                }
-                if (outsideRowCount > 0 && insideRowCount > 0)
-                {
-                    Console.WriteLine($"{outsideAvgTemp / outsideRowCount:F2} grader är medeltemperatur utomhus för {date} ");
-                    SaveToLog($"{outsideAvgTemp / outsideRowCount:F2} grader är medeltemperatur utomhus för {date} ");
-                    Console.WriteLine($"{insideAvgTemp / insideRowCount:F2} grader är medeltemperatur inomhus för {date}");
-                    SaveToLog($"{insideAvgTemp / insideRowCount:F2} grader är medeltemperatur inomhus för {date}");
-                }
-                else
-                {
-                    Console.WriteLine("Inga mätningar hittades för valt datum");
-                    SaveToLog("Inga mätningar hittades för valt datum " + date);
-                }
 
+
+
+                    Regex regex = new Regex(pattern);
+
+
+                    while ((line = reader.ReadLine()) != null)
+
+                    {
+                        Match match = regex.Match(line);
+                        if (match.Success)
+                        {
+                            //Console.WriteLine(line);
+                            string tempString = match.Groups["temp"].Value.Replace(".", ",");
+                            if (decimal.TryParse(tempString, out decimal temp))
+                            {
+                                if (line.Contains("Ute"))
+                                {
+                                    outsideAvgTemp += temp;
+                                    outsideRowCount++;
+                                }
+                                else
+                                {
+                                    insideAvgTemp += temp;
+                                    insideRowCount++;
+                                }
+
+                            }
+                        }
+                    }
+                    if (outsideRowCount > 0 && insideRowCount > 0)
+                    {
+                        //Console.WriteLine($"{outsideAvgTemp / outsideRowCount:F2} grader är medeltemperatur utomhus för {date} ");
+                        //SaveToLog($"{outsideAvgTemp / outsideRowCount:F2} grader är medeltemperatur utomhus för {date} ");
+                        //Console.WriteLine($"{insideAvgTemp / insideRowCount:F2} grader är medeltemperatur inomhus för {date}");
+                        //SaveToLog($"{insideAvgTemp / insideRowCount:F2} grader är medeltemperatur inomhus för {date}");
+
+                        string outsideLog = $"{outsideAvgTemp / outsideRowCount:F2} grader är medeltemperatur utomhus för {date}";
+                        string insideLog = $"{insideAvgTemp / insideRowCount:F2} grader är medeltemperatur inomhus för {date}";
+
+                        Console.WriteLine(outsideLog);
+                        Console.WriteLine(insideLog);
+
+                        logger(outsideLog); // Använd delegaten för att logga
+                        logger(insideLog);
+
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Inga mätningar hittades för valt datum");
+                        SaveToLog("Inga mätningar hittades för valt datum " + date);
+                    }
+
+                }
+                
             }
-
+            catch (Exception ex)
+            {
+                Console.WriteLine("Fel inmatning" + ex.Message);
+            }
         }
+        
 
         public static void AverageHumidity(string date, string fileName)
         {

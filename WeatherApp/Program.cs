@@ -6,8 +6,11 @@ namespace WeatherApp
     {
         static void Main(string[] args)
         {
+            
+
             while (true)
             {
+             
                 
                 Console.Clear();
                 string fileName = "../../../Files/tempdata.txt";
