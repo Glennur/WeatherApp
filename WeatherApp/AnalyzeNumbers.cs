@@ -25,12 +25,11 @@ namespace WeatherApp
                 writer.WriteLine(text);
             }
         }
-        public static void AverageTemp(string date, string fileName)
+        public static void AverageTemp(string date, string fileName, LogDelegate log)
         {
             try
             {
-                LogDelegate logger = SaveToLog;
-
+                
                 using (StreamReader reader = new StreamReader(fileName))
                 {
                     string line;
@@ -100,8 +99,8 @@ namespace WeatherApp
                         Console.WriteLine(outsideLog);
                         Console.WriteLine(insideLog);
 
-                        logger(outsideLog); // Använd delegaten för att logga
-                        logger(insideLog);
+                        log(outsideLog); // Använd delegaten för att logga
+                        log(insideLog);
 
 
                     }

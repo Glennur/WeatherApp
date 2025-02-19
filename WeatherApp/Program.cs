@@ -28,7 +28,8 @@ namespace WeatherApp
                 {
                     case '1':
                         date = Helper.Date("");
-                        AnalyzeNumbers.AverageTemp(date, fileName);
+                        AnalyzeNumbers.LogDelegate log = AnalyzeNumbers.SaveToLog;
+                        AnalyzeNumbers.AverageTemp(date, fileName, log);
                         Console.ReadKey();
 
                         break;

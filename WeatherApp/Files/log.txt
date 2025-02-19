@@ -25,3 +25,32 @@ juni
 juni
 12,65 grader är medeltemperatur utomhus för 2016-06-06
 24,92 grader är medeltemperatur inomhus för 2016-06-06
+2016 december   2,26
+2016 november   4,88
+2017 januari    19,58
+2017 januari    19,58
+2016 november   4,88
+2016 december   2,26
+2016-07-30 26,59 False
+2016-06-03 26,58 False
+2016-07-31 26,50 False
+2016-06-02 26,30 False
+2016-07-29 25,84 False
+2016-07-28 25,71 False
+2016-08-02 25,64 False
+2016-06-04 25,62 False
+2016-08-01 25,33 False
+2016-05-31 25,16 False
+2016-05-31 25,33 True
+2016-06-07 23,07 True
+2016-06-02 22,44 True
+2016-09-07 21,56 True
+2016-06-03 21,22 True
+2016-07-29 20,82 True
+2016-09-15 20,80 True
+2016-07-30 20,78 True
+2016-06-01 20,68 True
+2016-07-28 19,49 True
+januari
+Inga mätningar hittades för valt datum 2016-01-25
+Inga mätningar hittades för valt datum 2016-05-24
